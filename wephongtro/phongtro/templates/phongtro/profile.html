@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="vi">
+  {% load static %}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông tin tài khoản | Trọ Tốt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 text-slate-800">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <a href="{% url 'phongtro:home_page' %}" class="flex items-center">
+          <img src="{% static 'phongtro/images/tro-tot-logo.svg' %}" alt="Trọ Tốt" class="h-12 w-auto object-contain sm:h-14" />
+        </a>
+        <div class="flex flex-wrap items-center justify-end gap-2">
+          <a href="{% url 'phongtro:home_page' %}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Trang chủ</a>
+          {% if is_admin_role %}
+          <a href="{% url 'phongtro:admin_dashboard' %}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Trang quản trị</a>
+          {% endif %}
+          {% if can_manage_posts %}
+          <a href="{% url 'phongtro:dashboard' %}" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Quản lý bài đăng</a>
+          {% endif %}
+          <a href="{% url 'phongtro:logout' %}" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100">Đăng xuất</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-10">
+      <div class="rounded-2xl bg-white p-8 shadow">
+        <h1 class="text-2xl font-extrabold text-slate-900">Trang thông tin tài khoản</h1>
+        <p class="mt-2 text-slate-600">Xin chào, <span class="font-semibold text-slate-900">{{ user.username }}</span>.</p>
+
+        <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="rounded-xl border border-slate-200 p-4">
+            <p class="text-sm text-slate-500">Tên đăng nhập</p>
+            <p class="mt-1 text-base font-semibold text-slate-900">{{ user.username }}</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4">
+            <p class="text-sm text-slate-500">Email</p>
+            <p class="mt-1 text-base font-semibold text-slate-900">{{ user.email|default:'Chưa cập nhật' }}</p>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 md:col-span-2">
+            <p class="text-sm text-slate-500">Loại tài khoản</p>
+            <p class="mt-1 text-base font-semibold text-slate-900">{{ profile_role.get_role_display }}</p>
+          </div>
+        </div>
+
+        {% if show_my_bookings %}
+        <div class="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+          <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">Lịch sử đặt phòng</h2>
+              <p class="mt-1 text-sm text-slate-600">Theo dõi trạng thái, xem lịch sử đặt phòng và hủy yêu cầu khi còn chờ duyệt.</p>
+            </div>
+            <a href="{% url 'phongtro:my_bookings' %}" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Mở lịch sử đặt phòng</a>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </main>
+
+    {% if messages %}
+    <div id="toastContainer" class="fixed right-4 top-4 z-[60] flex w-full max-w-sm flex-col gap-3">
+      {% for message in messages %}
+      <div class="toast-item rounded-xl px-4 py-3 text-sm font-semibold shadow-lg {% if 'error' in message.tags %}bg-red-600 text-white{% elif 'success' in message.tags %}bg-emerald-600 text-white{% else %}bg-slate-900 text-white{% endif %}">
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <script>
+      (function () {
+        const toasts = document.querySelectorAll('.toast-item');
+        if (!toasts.length) return;
+
+        setTimeout(() => {
+          toasts.forEach((toast) => {
+            toast.style.transition = 'all 0.4s ease';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(24px)';
+          });
+        }, 3000);
+
+        setTimeout(() => {
+          const container = document.getElementById('toastContainer');
+          if (container) container.remove();
+        }, 3500);
+      })();
+    </script>
+  </body>
+</html>

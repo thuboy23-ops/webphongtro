@@ -1,0 +1,43 @@
+﻿<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dang nhap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100">
+    <div class="mx-auto mt-16 max-w-md rounded-xl bg-white p-6 shadow">
+      <h1 class="mb-4 text-2xl font-bold">Dang nhap</h1>
+
+      {% if messages %}
+      <div class="mb-4 space-y-2">
+        {% for message in messages %}
+        <p class="rounded bg-red-100 px-3 py-2 text-sm text-red-700">{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="mb-1 block text-sm font-medium">Email hoac Username</label>
+          <input name="identifier" type="text" class="w-full rounded border px-3 py-2" required />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Phân loại tài khoản</label>
+          <select name="role" class="w-full rounded border px-3 py-2" required>
+            {% for value, label in login_role_choices %}
+            <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Mat khau</label>
+          <input name="password" type="password" class="w-full rounded border px-3 py-2" required />
+        </div>
+        <button class="w-full rounded bg-indigo-600 px-4 py-2 font-semibold text-white" type="submit">Dang nhap</button>
+      </form>
+    </div>
+  </body>
+</html>
